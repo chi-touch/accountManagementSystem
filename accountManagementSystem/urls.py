@@ -17,7 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+admin.site.site_header = 'Account Management System'
+
+#localhost:8000/api/v1/accounts
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("demo/", include("demo.urls"))
+    path("demo/", include("demo.urls")),
+    path("api/v1/", include('account.urls'))
 ]

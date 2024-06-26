@@ -1,5 +1,6 @@
 from django.db import models
 from .utility import generate_account_number
+from .validators import validate_pin
 
 
 # django give primary key by default
@@ -12,7 +13,8 @@ class Account(models.Model):
                                       primary_key=True)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
-    pin = models.CharField(max_length=4)
+    pin = models.CharField(max_length=4, validators=
+    [validate_pin])
     account_balance = models.DecimalField(max_digits=10,
                                           decimal_places=2,
                                           default=0.00)

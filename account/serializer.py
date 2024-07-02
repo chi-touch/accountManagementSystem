@@ -13,14 +13,14 @@ class AccountSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Account
-        fields = ['account_number', 'first_name', 'last_name', 'account_balance', 'account_type', 'transactions']
+        fields = ['account_number', 'account_balance', 'account_type', 'transactions']
         transactions = serializers.StringRelatedField()
 
 
 class AccountCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
-        fields = ['first_name', 'last_name', 'pin', 'account_type']
+        fields = ['user', 'account_number','pin', 'account_type']
 
     # Note all this commented below can be used in replace of the above Meta class
     # account_number = serializers.CharField(max_length=10)

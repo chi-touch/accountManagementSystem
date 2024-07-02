@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from .utility import generate_account_number
 from .validators import validate_pin
 
@@ -7,14 +8,13 @@ from .validators import validate_pin
 # Create your models here.
 
 class Account(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
     account_number = models.CharField(max_length=10,
                                       default=generate_account_number,
                                       unique=True,
                                       primary_key=True)
-    first_name = models.CharField(max_length=255)
-    last_name = models.CharField(max_length=255)
-    pin = models.CharField(max_length=4, validators=
-    [validate_pin])
+
+    pin = models.CharField(max_length=4, validators=[validate_pin])
     account_balance = models.DecimalField(max_digits=15,
                                           decimal_places=2,
                                           default=0.00)

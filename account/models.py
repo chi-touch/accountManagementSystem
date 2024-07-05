@@ -56,9 +56,11 @@ class Transaction(models.Model):
                                         choices=TRANSACTION_TYPE,
                                         default='CRE')
 
-    transaction_time = models.DateTimeField(auto_now=True)
-    amount = models.DecimalField(max_digits=15, decimal_places=2)
-    description = models.TextField(blank=True)
+    transaction_time = models.DateTimeField(auto_now_add=True)
+    # this is when amount is in interger not in string
+    # amount = models.DecimalField(max_digits=15, decimal_places=2)
+    amount = models.CharField(max_length=25)
+    description = models.CharField(max_length=255,blank=True,default="description not provided")
     transaction_status = models.CharField(max_length=1,
                                           choices=TRANSACTION_STATUS,
                                           default='S')

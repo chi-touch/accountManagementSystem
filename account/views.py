@@ -12,7 +12,7 @@ from rest_framework import status
 from rest_framework.status import HTTP_201_CREATED
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .models import Account, Transaction
 from .serializer import AccountSerializer, AccountCreateSerializer, DepositWithdrawSerializer, WithdrawSerializer, \
     TransferSerializer
@@ -108,6 +108,7 @@ class AccountViewSet(ModelViewSet):
 
 
 class Deposit(APIView):
+    permission_classes = [IsAdminUser]
     def post(self, request):
         serializer = DepositWithdrawSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -183,9 +184,8 @@ class TransferViewSet(ModelViewSet):
     serializer_class = TransferSerializer
     permission_classes = [IsAuthenticated]
 
-    @transaction.atomic
+    @transaction.atomic()
     def create(self, request, *args, **kwargs):
-        user = request.user
         serializer = TransferSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         sender_account = serializer.data['sender_account']
@@ -206,11 +206,16 @@ class TransferViewSet(ModelViewSet):
             Account.objects.filter(pk=receiver_account).update(account_balance=transaction_balance)
         except Account.DoesNotExist:
             return Response(data={"message": "Transfer failed"}, status=status.HTTP_400_BAD_REQUEST)
-        # Transaction.objects.create(
-        #     account=sender_account_from,
-        #     amount=amount,
-        #     transaction_type='TRANSFER'
-        # )
+        Transaction.objects.create(
+            account=sender_account_from,
+            amount='-' + str(amount),
+            transaction_type='TRANSFER'
+        )
+
+        Transaction.objects.create(
+            account=receiver_account_to,
+            amount ='+' + str(amount)
+        )
         transaction_details['receiver_account'] = receiver_account
         transaction_details['amount'] = amount
         transaction_details['transaction_type'] = 'TRANSFER'

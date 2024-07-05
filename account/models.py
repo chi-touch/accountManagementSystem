@@ -14,7 +14,7 @@ class Account(models.Model):
                                       unique=True,
                                       primary_key=True)
 
-    pin = models.CharField(max_length=4, validators=[validate_pin])
+    pin = models.CharField(max_length=4, validators=[validate_pin], default='0000')
     account_balance = models.DecimalField(max_digits=15,
                                           decimal_places=2,
                                           default=0.00)
@@ -29,9 +29,11 @@ class Account(models.Model):
                                     default='S')
     transactions = models.ManyToOneRel
 
+    def __str__(self):
+        return f"{self.account_type} {self.account_balance}"
 
-def __str__(self):
-    return f"{self.first_name} {self.last_name} {self.account_type} {self.account_balance}"
+    def first_name(self):
+        return self.user
 
 
 class Transaction(models.Model):
@@ -60,4 +62,3 @@ class Transaction(models.Model):
     transaction_status = models.CharField(max_length=1,
                                           choices=TRANSACTION_STATUS,
                                           default='S')
-

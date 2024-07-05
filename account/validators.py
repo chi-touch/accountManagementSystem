@@ -6,3 +6,6 @@ def validate_pin(pin: str):
         raise ValidationError("Pin must be four digit")
 
 
+def validate_amount(amount: str):
+    if len(amount) < 1:
+        raise ValidationError("Can not deposit negative amount")
